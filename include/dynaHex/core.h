@@ -80,7 +80,7 @@ namespace DynaHex {
         }
 
         [[nodiscard]] real magnitude() const {
-            return std::sqrt(x*x+y*y+z*z);
+            return real_sqrt(x*x+y*y+z*z);
         }
 
         [[nodiscard]] real squareMagnitude() const {

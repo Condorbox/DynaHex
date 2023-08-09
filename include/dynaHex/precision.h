@@ -1,3 +1,7 @@
+#ifndef DYNAHEX_PRECISION_H
+#define DYNAHEX_PRECISION_H
+
+
 namespace DynaHex {
     /** Defines a real number precision. DynaHex can be compiled in
     * single- or double-precision versions. By default, single
@@ -5,3 +9,5 @@ namespace DynaHex {
 
     typedef float real;
 }
+
+#endif

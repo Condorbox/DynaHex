@@ -3,7 +3,7 @@
 
 #include "core.h"
 
-namespace DynaHex {
+namespace dynahex {
     class Particle {
     protected:
         /**
@@ -19,27 +19,34 @@ namespace DynaHex {
         Vector3 position;
         Vector3 velocity;
         Vector3 acceleration;
+        /**
+         * Holds the accumulated force to be applied at the next
+         * simulation iteration only. This value is zeroed at each
+         * integration step.
+         */
+        Vector3 forceAccum;
 
     public:
         void setInverseMass(real inverseMass);
         [[nodiscard]] real getInverseMass() const;
-        real getMass() const;
+        void setMass(const real mass);
+        [[nodiscard]] real getMass() const;
         /**
         * Returns true if the mass of the particle is not-infinite.
         */
-        bool hasFiniteMass() const;
+        [[nodiscard]] bool hasFiniteMass() const;
         void setDamping(const real damping);
-        real getDamping() const;
+        [[nodiscard]] real getDamping() const;
         void setPosition(const Vector3 &position);
         void setPosition(const real x, const real y, const real z);
         void getPosition(Vector3 *position) const;
-        Vector3 getPosition() const;
+        [[nodiscard]] Vector3 getPosition() const;
         void setVelocity(const Vector3 &velocity);
         void setVelocity(const real x, const real y, const real z);
-        Vector3 getVelocity() const;
+        [[nodiscard]] Vector3 getVelocity() const;
         void setAcceleration(const Vector3 &acceleration);
         void setAcceleration(const real x, const real y, const real z);
-        Vector3 getAcceleration() const;
+        [[nodiscard]] Vector3 getAcceleration() const;
 
         /**
         * Integrates the particle forward in time by the given amount.

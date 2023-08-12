@@ -9,4 +9,8 @@ add_executable(DynaHex main.cpp
         include/dynaHex/core.h
         include/dynaHex/precision.h
         include/dynaHex/particle.h
-        scr/particle.cpp)
+        scr/particle.cpp
+        scr/demos/Particles/BallisticDemo.cpp
+        scr/demos/Particles/BallisticDemo.h
+        scr/demos/Application.h
+)

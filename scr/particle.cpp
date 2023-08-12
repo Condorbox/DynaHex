@@ -2,7 +2,7 @@
 #include <cassert>
 #include <dynaHex/particle.h>
 
-using namespace DynaHex;
+using namespace dynahex;
 
 void Particle::integrate(real duration) {
     // We don't integrate things with zero mass.
@@ -14,8 +14,8 @@ void Particle::integrate(real duration) {
     position.addScaledVector(velocity, duration);
 
     // Work out the acceleration from the force
-    //TODO add to this vector forces
     Vector3 resultingAcc = acceleration;
+    resultingAcc.addScaledVector(forceAccum, inverseMass);
 
     // Update linear velocity from the acceleration.
     velocity.addScaledVector(resultingAcc, duration);
@@ -114,9 +114,18 @@ Vector3 Particle::getAcceleration() const
 
 void Particle::clearAccumulator()
 {
-    //TODO Clear force accumulator
+    forceAccum.clear();
 }
 
 real Particle::calculateKineticEnergy() {
     return (real)0.5 * getMass() * real_pow(Particle::velocity.magnitude(), (real)2);
+}
+
+void Particle::getPosition(Vector3 *position) const {
+    *position = Particle::position;
+}
+
+void Particle::setMass(const real mass) {
+    assert(mass != 0);
+    Particle::inverseMass = ((real)1.0)/mass;
 }

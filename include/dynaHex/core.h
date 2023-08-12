@@ -5,7 +5,7 @@
 
 #include "precision.h"
 
-namespace DynaHex {
+namespace dynahex {
     class Vector3 {
     public:
         real x;
@@ -116,6 +116,11 @@ namespace DynaHex {
 
         [[nodiscard]] Vector3 vectorProduct(const Vector3 &vector) const {
             return {y*vector.z - z*vector.y, z*vector.x - x*vector.z, x*vector.y - y*vector.x};
+        }
+
+        void clear()
+        {
+            x = y = z = 0;
         }
 
     private:

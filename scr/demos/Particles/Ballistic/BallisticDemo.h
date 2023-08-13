@@ -2,8 +2,8 @@
 #ifndef DYNAHEX_BALLISTICDEMO_H
 #define DYNAHEX_BALLISTICDEMO_H
 
-#include <dynaHex/particle.h>
-#include "../Application.h"
+#include "dynaHex/particle.h"
+#include "../../Application.h"
 
 class BallisticDemo : public Application {
 
@@ -32,7 +32,6 @@ class BallisticDemo : public Application {
     const static unsigned ammoRounds = 16;
     AmmoRound ammo[ammoRounds];
     ShotType currentShotType;
-    void fire();
 
 public:
     BallisticDemo();
@@ -44,6 +43,7 @@ public:
     void display() override;
 
     void changeAmmoType(unsigned short int number);
+    void fire();
 };
 
 #endif //DYNAHEX_BALLISTICDEMO_H

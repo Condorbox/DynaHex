@@ -59,8 +59,6 @@ void BallisticDemo::fire() {
 }
 
 void BallisticDemo::update() {
-    fire();
-
     // Find the duration of the last frame in seconds
     float duration = 3.45f;
     if (duration <= 0.0f) return;
@@ -83,7 +81,6 @@ void BallisticDemo::update() {
             }
         }
     }
-
 }
 
 void BallisticDemo::display() {
@@ -113,5 +110,6 @@ BallisticDemo::BallisticDemo() {
 
     for (auto & i : ammo) {
         i.type = currentShotType;
+        fire();
     }
 }

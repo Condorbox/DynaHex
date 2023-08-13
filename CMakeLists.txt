@@ -10,7 +10,12 @@ add_executable(DynaHex main.cpp
         include/dynaHex/precision.h
         include/dynaHex/particle.h
         scr/particle.cpp
-        scr/demos/Particles/BallisticDemo.cpp
-        scr/demos/Particles/BallisticDemo.h
+        scr/demos/Particles/Ballistic/BallisticDemo.cpp
+        scr/demos/Particles/Ballistic/BallisticDemo.h
         scr/demos/Application.h
+        scr/demos/Particles/Firework/Firework.cpp
+        scr/demos/Particles/Firework/FireworkDemo.h
+        scr/demos/Particles/Firework/FireworkDemo.cpp
+        include/dynaHex/random.h
+        scr/random.cpp
 )

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <random>
-#include "scr/demos/Particles/BallisticDemo.h"
+#include "scr/demos/Particles/Ballistic/BallisticDemo.h"
 
 using namespace dynahex;
 
@@ -10,6 +10,8 @@ int main() {
     unsigned long timesToDisplay = 100;
 
     auto* app = new BallisticDemo();
+
+    app->changeAmmoType(3);
 
     for (unsigned long i = 0; i < timesToDisplay; i++) {
         app->update();

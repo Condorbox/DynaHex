@@ -18,4 +18,5 @@ add_executable(DynaHex main.cpp
         scr/demos/Particles/Firework/FireworkDemo.cpp
         include/dynaHex/random.h
         scr/random.cpp
+        scr/core.cpp
 )

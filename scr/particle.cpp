@@ -129,3 +129,11 @@ void Particle::setMass(const real mass) {
     assert(mass != 0);
     Particle::inverseMass = ((real)1.0)/mass;
 }
+
+void Particle::addForce(const Vector3 &force) {
+    forceAccum += force;
+}
+
+void Particle::getVelocity(Vector3 *velocity) const {
+    *velocity = Particle::velocity;
+}

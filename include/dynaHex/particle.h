@@ -44,6 +44,7 @@ namespace dynahex {
         void setVelocity(const Vector3 &velocity);
         void setVelocity(const real x, const real y, const real z);
         [[nodiscard]] Vector3 getVelocity() const;
+        void getVelocity(Vector3 *velocity) const;
         void setAcceleration(const Vector3 &acceleration);
         void setAcceleration(const real x, const real y, const real z);
         [[nodiscard]] Vector3 getAcceleration() const;
@@ -57,6 +58,11 @@ namespace dynahex {
         void integrate(real duration);
         real calculateKineticEnergy();
         void clearAccumulator();
+        /**
+        * Adds the given force to the particle to be applied at the
+        * next iteration only.
+        */
+        void addForce(const Vector3 &force);
     };
 }
 

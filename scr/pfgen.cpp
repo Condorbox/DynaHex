@@ -33,7 +33,7 @@ void ParticleDrag::updateForce(Particle* particle, real duration) {
 void ParticleUplift::updateForce(Particle *particle, real duration) {
     Vector3 particlePosition;
     particle->getPosition(&particlePosition);
-    if (std::abs(origin.x - particlePosition.x) > distance || std::abs(origin.z - particlePosition.z) > distance) return;
+    if (real_abs(origin.x - particlePosition.x) > distance || real_abs(origin.z - particlePosition.z) > distance) return;
 
     // Calculate uplift force
     Vector3 upliftForce = Vector3(0, (gravity * particle->getMass()).magnitude(), 0);
@@ -67,5 +67,67 @@ void ParticleAttraction::updateForce(Particle *particle, real duration) {
     force.normalize();
     force *= attractionForceMagnitude;
 
+    particle->addForce(force);
+}
+
+void ParticleSpring::updateForce(Particle* particle, real duration) {
+    // Calculate the vector of the spring.
+    Vector3 force;
+    particle->getPosition(&force);
+    force -= other->getPosition();
+    // Calculate the magnitude of the force.
+    real magnitude = force.magnitude();
+    magnitude = real_abs(magnitude - restLength);
+    magnitude *= springConstant;
+    // Calculate the final force and apply it.
+    force.normalize();
+    force *= -magnitude;
+    particle->addForce(force);
+}
+
+void ParticleAnchoredSpring::updateForce(Particle *particle, real duration) {
+    // Calculate the vector of the spring.
+    Vector3 force;
+    particle->getPosition(&force);
+    force -= *anchor;
+    // Calculate the magnitude of the force.
+    real magnitude = force.magnitude();
+    magnitude = (restLength - magnitude) * springConstant;
+    // Calculate the final force and apply it.
+    force.normalize();
+    force *= magnitude;
+    particle->addForce(force);
+}
+
+void ParticleBungee::updateForce(Particle *particle, real duration) {
+    // Calculate the vector of the spring.
+    Vector3 force;
+    particle->getPosition(&force);
+    force -= other->getPosition();
+    // Check if the bungee is compressed.
+    real magnitude = force.magnitude();
+    if (magnitude <= restLength) return;
+    // Calculate the magnitude of the force.
+    magnitude = springConstant * (restLength - magnitude);
+    // Calculate the final force and apply it.
+    force.normalize();
+    force *= -magnitude;
+    particle->addForce(force);
+}
+
+void ParticleBuoyancy::updateForce(Particle *particle, real duration) {
+    // Calculate the submersion depth.
+    real depth = particle->getPosition().y;
+    // Check if we’re out of the water.
+    if (depth >= waterHeight + maxDepth) return;
+    Vector3 force(0,0,0);
+    // Check if we’re at maximum depth.
+    if (depth <= waterHeight - maxDepth) {
+        force.y = liquidDensity * volume;
+        particle->addForce(force);
+        return;
+    }
+    // Otherwise we are partly submerged.
+    force.y = liquidDensity * volume * (depth - maxDepth - waterHeight) / 2 * maxDepth;
     particle->addForce(force);
 }

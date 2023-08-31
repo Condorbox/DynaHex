@@ -20,6 +20,15 @@ namespace dynahex {
 
     /** Defines the precision of the absolute magnitude operator. */
     #define real_abs fabsf
+
+    /** Defines the precision of the sine operator. */
+    #define real_sin sinf
+
+    /** Defines the precision of the cosine operator. */
+    #define real_cos cosf
+
+    /** Defines the precision of the exponent operator. */
+    #define real_exp expf
 }
 
 #endif

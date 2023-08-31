@@ -199,5 +199,66 @@ namespace dynahex {
         /** Applies the buoyancy force to the given particle. */
         void updateForce(Particle *particle, real duration) override;
     };
+
+    /**
+    * A force generator that fakes a stiff spring force, and where
+    * one end is attached to a fixed point in space.
+    */
+    class ParticleFakeSpring : public ParticleForceGenerator {
+        /** The location of the anchored end of the spring. */
+        Vector3 *anchor;
+        /** Holds the spring constant. */
+        real springConstant;
+        /** Holds the damping on the oscillation of the spring. */
+        real damping;
+    public:
+        /** Creates a new spring with the given parameters. */
+        ParticleFakeSpring(Vector3 *anchor, real springConstant, real damping);
+        /** Applies the spring force to the given particle. */
+        void updateForce(Particle *particle, real duration) override;
+    };
+
+    class ParticleSpringLimit : public ParticleForceGenerator {
+        /** The location of the anchored end of the spring. */
+        Vector3 *anchor;
+        /** Holds the spring constant. */
+        real springConstant;
+        /** Holds the damping on the oscillation of the spring. */
+        real damping;
+        /** Holds the limit of elasticity*/
+        real maxDistance;
+    public:
+        ParticleSpringLimit(Vector3 *anchor, real springConstant, real damping, real maxDistance);
+        void updateForce(Particle *particle, real duration) override;
+    };
+
+    class ParticleAirBuoyancy : public ParticleForceGenerator{
+        real maxAltitude;   // Maximum altitude where force diminishes
+        real objectDensity; // Density of the object
+        real airDensity;    // Density of the surrounding air
+        real maxForce;      // Maximum force at maxAltitude
+    public:
+        ParticleAirBuoyancy(real maxAltitude, real objectDensity, real airDensity, real maxForce);
+        void updateForce(Particle *particle, real duration) override;
+    };
+
+    class ParticleOvercrowding : public ParticleForceGenerator {
+        real maxDistance;          // Maximum separation distance
+        real springConstant;       // Spring constant for the forces
+        std::vector<Particle*> particles; // List of particles to track
+    public:
+        ParticleOvercrowding(real maxDistance, real springConstant);
+        void addParticle(Particle* particle);
+        void removeParticle(Particle* particle);
+        void updateForce(Particle* particle, real duration) override;
+    };
+
+    class ParticleHomingBullet : public ParticleForceGenerator {
+        Particle* target;         // The target particle to home in on
+        real springConstant;      // Spring constant for the forces
+    public:
+        ParticleHomingBullet(Particle* target, real springConstant);
+        void updateForce(Particle* particle, real duration) override;
+    };
 }
 #endif //DYNAHEX_PFGEN_H

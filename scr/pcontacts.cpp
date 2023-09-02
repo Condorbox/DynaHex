@@ -137,3 +137,15 @@ void ParticleContactResolver::resolveContacts(ParticleContact *contactArray, uns
         iterationsUsed++;
     }
 }
+
+unsigned GroundPlaneCollisionDetector::addContact(ParticleContact *contact, unsigned int limit) const {
+    Particle *colParticle = contact->particle[0];
+    if (colParticle->getPosition().y + colParticle->getSize() > ground.y) return 0;
+
+    Vector3 normal = ground - colParticle->getPosition();
+    normal.normalize();
+    contact->contactNormal = normal;
+    contact->penetration = real_abs(ground.y - colParticle->getPosition().y);
+    contact->restitution = 0;
+    return 1;
+}

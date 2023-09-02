@@ -30,6 +30,7 @@ namespace dynahex {
         const static Vector3 X;
         const static Vector3 Y;
         const static Vector3 Z;
+        const static Vector3 Zero;
 
         real operator[](unsigned i) const {
             if (i == 0) return x;

@@ -110,5 +110,11 @@ namespace dynahex {
          */
         virtual unsigned addContact(ParticleContact *contact, unsigned limit) const = 0;
     };
+
+    class GroundPlaneCollisionDetector : public ParticleContactGenerator {
+        Vector3 ground = Vector3::Zero;
+    public:
+        unsigned addContact(ParticleContact *contact, unsigned limit) const override;
+    };
 }
 #endif //DYNAHEX_PCONTACTS_H

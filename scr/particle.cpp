@@ -137,3 +137,11 @@ void Particle::addForce(const Vector3 &force) {
 void Particle::getVelocity(Vector3 *velocity) const {
     *velocity = Particle::velocity;
 }
+
+void Particle::setSize(const real size) {
+    Particle::size = size;
+}
+
+real Particle::getSize() const {
+    return size;
+}

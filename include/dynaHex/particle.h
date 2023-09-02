@@ -16,6 +16,7 @@ namespace dynahex {
          */
         real inverseMass;
         real damping; //0 remove all energy, 1 no remove energy
+        real size;
         Vector3 position;
         Vector3 velocity;
         Vector3 acceleration;
@@ -48,6 +49,8 @@ namespace dynahex {
         void setAcceleration(const Vector3 &acceleration);
         void setAcceleration(const real x, const real y, const real z);
         [[nodiscard]] Vector3 getAcceleration() const;
+        void setSize(const real size);
+        [[nodiscard]] real getSize() const;
 
         /**
         * Integrates the particle forward in time by the given amount.

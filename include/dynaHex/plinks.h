@@ -11,7 +11,7 @@ namespace dynahex {
     * base class for cables and rods, and could be used as a base
     * class for springs with a limit to their extension.
     */
-    class ParticleLink : ParticleContactGenerator {
+    class ParticleLink : public ParticleContactGenerator {
     public:
         /**
         * Holds the pair of particles that are connected by this link.
@@ -77,6 +77,13 @@ namespace dynahex {
         * Fills the given contact structure with the contact needed
         * to keep the rod from extending or compressing.
         */
+        unsigned addContact(ParticleContact *contact, unsigned limit) const override;
+    };
+
+    class MaxMinContactGenerator : public ParticleLink {
+        real min;
+        real max;
+    public:
         unsigned addContact(ParticleContact *contact, unsigned limit) const override;
     };
 }

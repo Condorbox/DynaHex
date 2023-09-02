@@ -19,4 +19,4 @@ add_executable(DynaHex main.cpp
         include/dynaHex/random.h
         scr/random.cpp
         scr/core.cpp
-        scr/particle.cpp scr/particle.cpp include/dynaHex/pfgen.h scr/pfgen.cpp include/dynaHex/pcontacts.h scr/pcontacts.cpp include/dynaHex/plinks.h scr/plinks.cpp)
+        scr/particle.cpp scr/particle.cpp include/dynaHex/pfgen.h scr/pfgen.cpp include/dynaHex/pcontacts.h scr/pcontacts.cpp include/dynaHex/plinks.h scr/plinks.cpp include/dynaHex/pworld.h scr/pworld.cpp)

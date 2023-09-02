@@ -97,8 +97,7 @@ namespace dynahex {
      * This is the basic polymorphic interface for contact generators
      * applying to particles.
      */
-    class ParticleContactGenerator
-    {
+    class ParticleContactGenerator {
     public:
         /**
          * Fills the given contact structure with the generated

@@ -38,9 +38,36 @@ void ParticleWorld::runPhysics(real duration) {
         resolver.resolveContacts(contacts, usedContacts, duration);
     }
 }
-/*
-void loop()
-{
+
+ParticleWorld::ParticleWorld(unsigned int maxContacts, unsigned int iterations) : resolver(iterations), maxContacts(maxContacts) {
+    contacts = new ParticleContact[maxContacts];
+    calculateIterations = (iterations == 0);
+}
+
+ParticleWorld::~ParticleWorld() {
+    delete[] contacts;
+}
+
+void ParticleWorld::startFrame() {
+    for (auto p : particles) {
+        p->clearAccumulator();
+    }
+}
+
+ParticleWorld::Particles &ParticleWorld::getParticles() {
+    return particles;
+}
+
+ParticleWorld::ContactGenerators& ParticleWorld::getContactGenerators() {
+    return contactGenerators;
+}
+
+ParticleForceRegistry& ParticleWorld::getForceRegistry() {
+    return registry;
+}
+
+/* How the main loop might look
+void loop() {
     while (true) {
     // Prepare the objects for this frame.
         world.startFrame();
@@ -53,3 +80,27 @@ void loop()
     }
 }
 */
+
+void GroundContacts::init(dynahex::ParticleWorld::Particles *particles) {
+    GroundContacts::particles = particles;
+}
+
+unsigned GroundContacts::addContact(ParticleContact *contact, unsigned int limit) const {
+    unsigned count = 0;
+    for (auto p : *particles) {
+        dynahex::real y = p->getPosition().y;
+        if (y < (real)0.0) {
+            contact->contactNormal = dynahex::Vector3::UP;
+            contact->particle[0] = p;
+            contact->particle[1] = nullptr;
+            contact->penetration = -y;
+            contact->restitution = (real)0.2;
+            contact++;
+            count++;
+        }
+
+        if (count >= limit) return count;
+    }
+
+    return count;
+}

@@ -63,7 +63,7 @@ namespace dynahex {
          * don't give a number of iterations, then twice the number of
          * contacts will be used.
          */
-        ParticleWorld(unsigned maxContacts, unsigned iterations=0);
+        explicit ParticleWorld(unsigned maxContacts, unsigned iterations=0);
 
         /**
          * Deletes the simulator.

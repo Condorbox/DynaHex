@@ -142,6 +142,12 @@ namespace dynahex {
         void clear() {
             x = y = z = 0;
         }
+
+        [[nodiscard]] Vector3 unit() const {
+            Vector3 result = *this;
+            result.normalize();
+            return result;
+        }
     };
 }
 

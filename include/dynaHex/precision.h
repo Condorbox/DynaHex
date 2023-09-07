@@ -29,6 +29,11 @@ namespace dynahex {
 
     /** Defines the precision of the exponent operator. */
     #define real_exp expf
+
+    /** Defines the number e on which 1+e == 1 */
+    #define real_epsilon FLT_EPSILON
+
+    #define R_PI 3.14159f
 }
 
 #endif

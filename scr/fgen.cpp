@@ -62,3 +62,49 @@ void AngularVelocityController::updateForce(RigidBody *body, real duration) {
     // Apply the torque to the rigid body.
     body->addForce(torqueDirection * torqueMagnitude);
 }
+
+Aero::Aero(const Matrix3 &tensor, const Vector3 &position, const Vector3 *windspeed) : tensor(tensor),
+    position(position), windspeed(windspeed) {}
+
+void Aero::updateForce(RigidBody *body, real duration) {
+    Aero::updateForceFromTensor(body, duration, tensor);
+}
+
+void Aero::updateForceFromTensor(RigidBody *body, real duration, const Matrix3 &tensor) {
+    //Calculate total velocity (wind speed and body’s velocity).
+    Vector3 velocity = body->getVelocity();
+    velocity += *windspeed;
+    // Calculate the velocity in body coordinates.
+    Vector3 bodyVel = body->getTransform().transformInverseDirection(velocity);
+    // Calculate the force in body coordinates.
+    Vector3 bodyForce = tensor.transform(bodyVel);
+    Vector3 force = body->getTransform().transformDirection(bodyForce);
+    // Apply the force.
+    body->addForceAtBodyPoint(force, position);
+}
+
+
+Matrix3 AeroControl::getTensor() {
+    if (controlSetting <= -1.0f) return minTensor;
+    else if (controlSetting >= 1.0f) return maxTensor;
+    else if (controlSetting < 0) {
+        return Matrix3::linearInterpolate(minTensor, tensor, controlSetting+1.0f);
+    }
+    else if (controlSetting > 0) {
+        return Matrix3::linearInterpolate(tensor, maxTensor, controlSetting);
+    }
+    else return tensor;
+}
+
+void AeroControl::updateForce(RigidBody *body, real duration) {
+    Matrix3 tensor = getTensor();
+    Aero::updateForceFromTensor(body, duration, tensor);
+}
+
+AeroControl::AeroControl(const Matrix3 &base, const Matrix3 &min, const Matrix3 &max, const Vector3 &position,
+                         const Vector3 *windspeed) : Aero(base, position, windspeed),
+                         minTensor(min), maxTensor(max), controlSetting(0.0f) {}
+
+void AeroControl::setControl(real value) {
+    AeroControl::controlSetting = value;
+}

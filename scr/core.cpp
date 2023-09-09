@@ -59,3 +59,11 @@ void Matrix4::setInverse(const Matrix4 &m) {
                +m.data[4]*m.data[1]*m.data[11]
                -m.data[0]*m.data[5]*m.data[11])*det;
 }
+
+Matrix3 Matrix3::linearInterpolate(const dynahex::Matrix3 &a, const dynahex::Matrix3 &b, dynahex::real prop) {
+    Matrix3 result{};
+    for (unsigned i = 0; i < 9; i++) {
+        result.data[i] = a.data[i] * (1-prop) + b.data[i] * prop;
+    }
+    return result;
+}

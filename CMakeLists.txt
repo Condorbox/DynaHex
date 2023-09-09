@@ -23,4 +23,6 @@ add_executable(DynaHex main.cpp
         include/dynaHex/body.h
         scr/body.cpp
         scr/fgen.cpp
-        include/dynaHex/fgen.h)
+        include/dynaHex/fgen.h
+        include/dynaHex/world.h
+        scr/world.cpp)

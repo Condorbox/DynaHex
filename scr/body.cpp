@@ -173,3 +173,13 @@ Vector3 RigidBody::getTorqueAccum() {
 Quaternion RigidBody::getOrientation() {
     return orientation;
 }
+
+Vector3 RigidBody::getVelocity() const {
+    return velocity;
+}
+
+Matrix4 RigidBody::getTransform() const {
+    return transformMatrix;
+}
+
+

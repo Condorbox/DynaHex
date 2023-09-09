@@ -179,6 +179,8 @@ namespace dynahex {
 
         [[nodiscard]] Vector3 getTorqueAccum();
         [[nodiscard]] Quaternion getOrientation();
+        [[nodiscard]] Vector3 getVelocity() const;
+        [[nodiscard]] Matrix4 getTransform() const;
     };
 }
 #endif //DYNAHEX_BODY_H

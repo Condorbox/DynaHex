@@ -21,4 +21,6 @@ add_executable(DynaHex main.cpp
         scr/core.cpp
         scr/particle.cpp scr/particle.cpp include/dynaHex/pfgen.h scr/pfgen.cpp include/dynaHex/pcontacts.h scr/pcontacts.cpp include/dynaHex/plinks.h scr/plinks.cpp include/dynaHex/pworld.h scr/pworld.cpp
         include/dynaHex/body.h
-        scr/body.cpp)
+        scr/body.cpp
+        scr/fgen.cpp
+        include/dynaHex/fgen.h)

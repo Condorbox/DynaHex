@@ -70,26 +70,39 @@ namespace dynahex {
         * define a rigid body, is given in body space.
         */
         Matrix3 inverseInertiaTensor;
-
         /**
          * Holds the inverse inertia tensor of the body in world
          * space. The inverse inertia tensor member is specified in
          * the body's local space.
          */
         Matrix3 inverseInertiaTensorWorld;
-
         /**
         * Holds the accumulated force to be applied at the next
         * integration step.
         */
         Vector3 forceAccum;
-
         /**
          * Holds the accumulated torque to be applied at the next
          * integration step.
          */
         Vector3 torqueAccum;
-
+        /**
+        * Holds the amount of damping applied to angular
+        * motion. Damping is required to remove energy added
+        * through numerical instability in the integrator.
+        */
+        real angularDamping;
+        /**
+          * Holds the acceleration of the rigid body.  This value
+          * can be used to set acceleration due to gravity (its primary
+          * use), or any other constant acceleration.
+          */
+        Vector3 acceleration;
+        /**
+         * Holds the linear acceleration of the rigid body, for the
+         * previous frame.
+         */
+        Vector3 lastFrameAcceleration;
     public:
         /**
         * Calculates internal data from state data. This should be called
@@ -99,6 +112,13 @@ namespace dynahex {
         * the transform matrix), then you can omit this step.
         */
         void calculateDerivedData();
+        /**
+         * Integrates the rigid body forward in time by the given amount.
+         * This function uses a Newton-Euler integration method, which is a
+         * linear approximation to the correct integral. For this reason it
+         * may be inaccurate in some cases.
+         */
+        void integrate(real duration);
 
         void setInertiaTensor(const Matrix3 &inertiaTensor);
 
@@ -107,14 +127,6 @@ namespace dynahex {
         * The force is expressed in world coordinates.
         */
         void addForce(const Vector3 &force);
-
-        /**
-         * Integrates the rigid body forward in time by the given amount.
-         * This function uses a Newton-Euler integration method, which is a
-         * linear approximation to the correct integral. For this reason it
-         * may be inaccurate in some cases.
-         */
-        void integrate(real duration);
         /**
         * Clears the forces and torques in the accumulators. This will
         * be called automatically after each intergration step.
@@ -140,6 +152,33 @@ namespace dynahex {
          * local space.
          */
         [[nodiscard]] Vector3 getPointInWorldSpace(const Vector3 &point) const;
+        /**
+         * Returns true if the mass of the body is not-infinite.
+         */
+        [[nodiscard]] bool hasFiniteMass() const;
+        /**
+         * Sets the mass of the rigid body.
+         *
+         * @param mass The new mass of the body. This may not be zero.
+         * Small masses can produce unstable rigid bodies under
+         * simulation.
+         *
+         * @warning This invalidates internal data for the rigid body.
+         * Either an integration function, or the calculateInternals
+         * function should be called before trying to get any settings
+         * from the rigid body.
+         */
+        void setMass(real mass);
+
+        /**
+         * Gets the mass of the rigid body.
+         *
+         * @return The current mass of the rigid body.
+         */
+        [[nodiscard]] real getMass() const;
+
+        [[nodiscard]] Vector3 getTorqueAccum();
+        [[nodiscard]] Quaternion getOrientation();
     };
 }
 #endif //DYNAHEX_BODY_H

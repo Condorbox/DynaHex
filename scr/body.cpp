@@ -1,4 +1,5 @@
 
+#include <cassert>
 #include "dynaHex/body.h"
 
 using namespace dynahex;
@@ -98,11 +99,6 @@ void RigidBody::addForce(const Vector3 &force) {
     isAwake = true;
 }
 
-void RigidBody::integrate(real duration) {
-    // Clear accumulators.
-    clearAccumulators();
-}
-
 void RigidBody::clearAccumulators() {
     forceAccum.clear();
     torqueAccum.clear();
@@ -126,4 +122,54 @@ void RigidBody::addForceAtBodyPoint(const Vector3 &force, const Vector3 &point) 
 
 Vector3 RigidBody::getPointInWorldSpace(const Vector3 &point) const {
     return transformMatrix.transform(point);
+}
+
+bool RigidBody::hasFiniteMass() const {
+    return inverseMass >= 0.0f;
+}
+
+void RigidBody::setMass(const real mass) {
+    assert(mass != 0);
+    RigidBody::inverseMass = ((real)1.0)/mass;
+}
+
+real RigidBody::getMass() const {
+    if (inverseMass == 0) {
+        return REAL_MAX;
+    } else {
+        return ((real)1.0)/inverseMass;
+    }
+}
+
+void RigidBody::integrate(real duration) {
+    // Calculate linear acceleration from force inputs.
+    lastFrameAcceleration = acceleration;
+    lastFrameAcceleration.addScaledVector(forceAccum, inverseMass);
+    // Calculate angular acceleration from torque inputs.
+    Vector3 angularAcceleration = inverseInertiaTensorWorld.transform(torqueAccum);
+    // Adjust velocities.
+    // Update linear velocity from both acceleration and impulse.
+    velocity.addScaledVector(lastFrameAcceleration, duration);
+    // Update angular velocity from both acceleration and impulse.
+    rotation.addScaledVector(angularAcceleration, duration);
+    // Impose drag.
+    velocity *= real_pow(linearDamping, duration);
+    rotation *= real_pow(angularDamping, duration);
+    // Adjust positions.
+    // Update linear position.
+    position.addScaledVector(velocity, duration);
+    // Update angular position.
+    orientation.addScaledVector(rotation, duration);
+    // Normalize the orientation, and update the matrices with the new position and orientation.
+    calculateDerivedData();
+    // Clear accumulators.
+    clearAccumulators();
+}
+
+Vector3 RigidBody::getTorqueAccum() {
+    return torqueAccum;
+}
+
+Quaternion RigidBody::getOrientation() {
+    return orientation;
 }

@@ -108,3 +108,38 @@ AeroControl::AeroControl(const Matrix3 &base, const Matrix3 &min, const Matrix3 
 void AeroControl::setControl(real value) {
     AeroControl::controlSetting = value;
 }
+
+Buoyancy::Buoyancy(const Vector3 &cOfB, real maxDepth, real volume, real waterHeight, real liquidDensity) :
+centreOfBuoyancy(cOfB), maxDepth(maxDepth), volume(volume), waterHeight(waterHeight), liquidDensity(liquidDensity) {}
+
+void Buoyancy::updateForce(RigidBody *body, real duration) {
+// Calculate the submersion depth
+    Vector3 pointInWorld = body->getPointInWorldSpace(centreOfBuoyancy);
+    real depth = pointInWorld.y;
+
+    // Check if we're out of the water
+    if (depth >= waterHeight + maxDepth) return;
+    Vector3 force = Vector3::Zero;
+
+    // Check if we're at maximum depth
+    if (depth <= waterHeight - maxDepth) {
+        force.y = liquidDensity * volume;
+        body->addForceAtBodyPoint(force, centreOfBuoyancy);
+        return;
+    }
+
+    // Otherwise we are partly submerged
+    force.y = liquidDensity * volume * (depth - maxDepth - waterHeight) / 2 * maxDepth;
+    body->addForceAtBodyPoint(force, centreOfBuoyancy);
+}
+
+AngledAero::AngledAero(const Matrix3 &tensor, const Vector3 &position, const Vector3 *windspeed) :
+Aero(tensor, position, windspeed) {}
+
+void AngledAero::updateForce(RigidBody *body, real duration) {
+    Aero::updateForce(body, duration);
+}
+
+void AngledAero::setOrientation(const Quaternion &quat) {
+    orientation = quat;
+}

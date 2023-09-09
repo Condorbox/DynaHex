@@ -158,6 +158,70 @@ namespace dynahex {
          */
         void updateForce(RigidBody *body, real duration) override;
     };
+
+    /**
+    * A force generator to apply a buoyant force to a rigid body.
+    */
+    class Buoyancy : public ForceGenerator {
+        /**
+        * The maximum submersion depth of the object before
+        * it generates its maximum buoyancy force.
+        */
+        real maxDepth;
+        /**
+        * The volume of the object.
+        */
+        real volume;
+        /**
+        * The height of the water plane above y=0. The plane will be
+        * parallel to the XZ plane.
+        */
+        real waterHeight;
+        /**
+        * The density of the liquid. Pure water has a density of
+        * 1000 kg per cubic meter.
+        */
+        real liquidDensity;
+        /**
+        * The center of buoyancy of the rigid body, in body coordinates.
+        */
+        Vector3 centreOfBuoyancy;
+    public:
+        /** Creates a new buoyancy force with the given parameters. */
+        Buoyancy(const Vector3 &cOfB, real maxDepth, real volume, real waterHeight, real liquidDensity = 1000.0f);
+        /**
+        * Applies the force to the given rigid body.
+        */
+        void updateForce(RigidBody *body, real duration) override;
+    };
+
+    /**
+    * A force generator with an aerodynamic surface that can be
+    * reoriented relative to its rigid body.
+    */
+    class AngledAero : public Aero {
+        /**
+        * Holds the orientation of the aerodynamic surface relative
+        * to the rigid body to which it is attached.
+        */
+        Quaternion orientation;
+    public:
+        /**
+        * Creates a new aerodynamic surface with the given properties.
+        */
+        AngledAero(const Matrix3 &tensor, const Vector3 &position, const Vector3 *windspeed);
+        /**
+        * Sets the relative orientation of the aerodynamic surface
+        * relative to the rigid body that it is attached to. Note that
+        * this doesn’t affect the point of connection of the surface
+        * to the body.
+        */
+        void setOrientation(const Quaternion &quat);
+        /**
+        * Applies the force to the given rigid body.
+        */
+        void updateForce(RigidBody *body, real duration) override;
+    };
 }
 
 

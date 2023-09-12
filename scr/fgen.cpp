@@ -1,4 +1,5 @@
 
+#include <algorithm>
 #include "dynaHex/fgen.h"
 
 using namespace dynahex;
@@ -143,3 +144,29 @@ void AngledAero::updateForce(RigidBody *body, real duration) {
 void AngledAero::setOrientation(const Quaternion &quat) {
     orientation = quat;
 }
+
+void ForceRegistry::updateForces(real duration) {
+    auto i = registrations.begin();
+    for (; i != registrations.end(); i++) {
+        i->fg->updateForce(i->body, duration);
+    }
+}
+
+void ForceRegistry::add(RigidBody *body, ForceGenerator *fg) {
+    ForceRegistry::ForceRegistration registration{};
+    registration.body = body;
+    registration.fg = fg;
+    registrations.push_back(registration);
+}
+
+void ForceRegistry::clear() {
+    registrations.clear();
+}
+
+void ForceRegistry::remove(RigidBody *body, ForceGenerator *fg) {
+    registrations.erase(std::remove_if(registrations.begin(), registrations.end(),
+                                       [body, fg](const ForceRegistration& registration) {
+                                           return registration.body == body && registration.fg == fg;
+                                       }), registrations.end());
+}
+

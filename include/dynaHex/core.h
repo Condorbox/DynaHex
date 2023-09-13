@@ -6,6 +6,43 @@
 #include "precision.h"
 
 namespace dynahex {
+    /**
+     * Holds the value for energy under which a body will be put to
+     * sleep. This is a global value for the whole solution.  By
+     * default it is 0.1, which is fine for simulation when gravity is
+     * about 20 units per second squared, masses are about one, and
+     * other forces are around that of gravity. It may need tweaking
+     * if your simulation is drastically different to this.
+     */
+    extern real sleepEpsilon;
+    /**
+     * Sets the current sleep epsilon value: the kinetic energy under
+     * which a body may be put to sleep. Bodies are put to sleep if
+     * they appear to have a stable kinetic energy less than this
+     * value. For simulations that often have low values (such as slow
+     * moving, or light objects), this may need reducing.
+     *
+     * The value is global; all bodies will use it.
+     *
+     * @see sleepEpsilon
+     *
+     * @see getSleepEpsilon
+     *
+     * @param value The sleep epsilon value to use from this point
+     * on.
+     */
+    void setSleepEpsilon(real value);
+    /**
+     * Gets the current value of the sleep epsilon parameter.
+     *
+     * @see sleepEpsilon
+     *
+     * @see setSleepEpsilon
+     *
+     * @return The current value of the parameter.
+     */
+    real getSleepEpsilon();
+
     class Vector3 {
     public:
         real x;
@@ -27,10 +64,10 @@ namespace dynahex {
         const static Vector3 UP;
         const static Vector3 RIGHT;
         const static Vector3 OUT_OF_SCREEN;
+        const static Vector3 ZERO;
         const static Vector3 X;
         const static Vector3 Y;
         const static Vector3 Z;
-        const static Vector3 Zero;
 
         real operator[](unsigned i) const {
             if (i == 0) return x;
@@ -283,6 +320,45 @@ namespace dynahex {
         // Holds the tensor matrix data in array form.
         real data[9];
 
+        /**
+        * Creates a new matrix.
+        */
+        Matrix3() {
+            data[0] = data[1] = data[2] = data[3] = data[4] = data[5] =
+                data[6] = data[7] = data[8] = 0;
+        }
+        /**
+         * Creates a new matrix with the given three vectors making
+         * up its columns.
+         */
+        Matrix3(const Vector3& compOne, const Vector3& compTwo, const Vector3& compThree) {
+            setComponents(compOne, compTwo, compThree);
+        }
+        /**
+         * Creates a new matrix with explicit coefficients.
+         */
+        Matrix3(real c0, real c1, real c2, real c3, real c4, real c5, real c6, real c7, real c8) {
+            data[0] = c0; data[1] = c1; data[2] = c2;
+            data[3] = c3; data[4] = c4; data[5] = c5;
+            data[6] = c6; data[7] = c7; data[8] = c8;
+        }
+        /**
+         * Sets the matrix values from the given three vector components.
+         * These are arranged as the three columns of the vector.
+         */
+        void setComponents(const Vector3& compOne, const Vector3& compTwo, const Vector3& compThree) {
+            data[0] = compOne.x;
+            data[1] = compTwo.x;
+            data[2] = compThree.x;
+            data[3] = compOne.y;
+            data[4] = compTwo.y;
+            data[5] = compThree.y;
+            data[6] = compOne.z;
+            data[7] = compTwo.z;
+            data[8] = compThree.z;
+
+        }
+
         [[nodiscard]] Vector3 operator*(const Vector3 &vector) const {
             return Vector3 {
                     vector.x * data[0] + vector.y * data[1] + vector.z * data[2],
@@ -404,6 +480,35 @@ namespace dynahex {
             data[6] = 2*q.i*q.k + 2*q.j*q.r;
             data[7] = 2*q.j*q.k - 2*q.i*q.r;
             data[8] = 1 - (2*q.i*q.i  + 2*q.j*q.j);
+        }
+        /**
+         * Sets the matrix to be a diagonal matrix with the given
+         * values along the leading diagonal.
+         */
+        void setDiagonal(real a, real b, real c) {
+            setInertiaTensorCoeffs(a, b, c);
+        }
+        /**
+         * Sets the value of the matrix from inertia tensor values.
+         */
+        void setInertiaTensorCoeffs(real ix, real iy, real iz, real ixy = 0, real ixz = 0, real iyz = 0) {
+            data[0] = ix;
+            data[1] = data[3] = -ixy;
+            data[2] = data[6] = -ixz;
+            data[4] = iy;
+            data[5] = data[7] = -iyz;
+            data[8] = iz;
+        }
+        /**
+         * Sets the value of the matrix as an inertia tensor of
+         * a rectangular block aligned with the body's coordinate
+         * system with the given axis half-sizes and mass.
+         */
+        void setBlockInertiaTensor(const Vector3& halfSizes, real mass) {
+            Vector3 squares = halfSizes.componentProduct(halfSizes);
+            setInertiaTensorCoeffs(0.3f * mass * (squares.y + squares.z),
+                0.3f * mass * (squares.x + squares.z),
+                0.3f * mass * (squares.x + squares.y));
         }
         /**
          * Interpolates a couple of matrices.

@@ -46,12 +46,6 @@ namespace dynahex {
         */
         Vector3 rotation;
         /**
-         * A body can be put to sleep to avoid it being updated
-         * by the integration functions or affected by collisions
-         * with the world.
-         */
-        bool isAwake;
-        /**
         * Holds a transform matrix for converting body space into
         * world space and vice versa. This can be achieved by calling
         * the getPointIn*Space functions.
@@ -103,6 +97,23 @@ namespace dynahex {
          * previous frame.
          */
         Vector3 lastFrameAcceleration;
+        /**
+         * Holds the amount of motion of the body. This is a recency
+         * weighted mean that can be used to put a body to sleap.
+         */
+        real motion;
+        /**
+         * A body can be put to sleep to avoid it being updated
+         * by the integration functions or affected by collisions
+         * with the world.
+         */
+        bool isAwake;
+        /**
+         * Some bodies may never be allowed to fall asleep.
+         * User controlled bodies, for example, should be
+         * always awake.
+         */
+        bool canSleep;
     public:
         /**
         * Calculates internal data from state data. This should be called
@@ -170,6 +181,32 @@ namespace dynahex {
          */
         void setMass(real mass);
 
+        void setPosition(real x, real y, real z);
+        void setPosition(Vector3& position);
+        void setVelocity(real x, real y, real z);
+        void setRotation(real x, real y, real z);
+        void setOrientation(real r, real i, real j, real k);
+
+        void setDamping(const real linearDamping, const real angularDamping);
+        void setLinearDamping(const real linearDamping);
+        void setAngularDamping(const real angularDamping);
+
+        void setAcceleration(const Vector3& acceleration);
+        /**
+         * Sets the awake state of the body. If the body is set to be
+         * not awake, then its velocities are also cancelled, since
+         * a moving body that is not awake can cause problems in the
+         * simulation.
+         */
+        void setAwake(const bool awake = true);
+        /**
+         * Sets whether the body is ever allowed to go to sleep. Bodies
+         * under the player's control, or for which the set of
+         * transient forces applied each frame are not predictable,
+         * should be kept awake.
+         */
+        void setCanSleep(const bool canSleep = true);
+
         /**
          * Gets the mass of the rigid body.
          *
@@ -181,6 +218,7 @@ namespace dynahex {
         [[nodiscard]] Quaternion getOrientation();
         [[nodiscard]] Vector3 getVelocity() const;
         [[nodiscard]] Matrix4 getTransform() const;
+        [[nodiscard]] Vector3 getPosition() const;
     };
 }
 #endif //DYNAHEX_BODY_H

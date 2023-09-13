@@ -133,6 +133,36 @@ void RigidBody::setMass(const real mass) {
     RigidBody::inverseMass = ((real)1.0)/mass;
 }
 
+void RigidBody::setPosition(const real x, const real y, const real z) {
+    position.x = x;
+    position.y = y;
+    position.z = z;
+}
+
+void RigidBody::setPosition(Vector3& position) {
+    RigidBody::position = position;
+}
+
+void RigidBody::setVelocity(const real x, const real y, const real z) {
+    velocity.x = x;
+    velocity.y = y;
+    velocity.z = z;
+}
+
+void RigidBody::setRotation(const real x, const real y, const real z) {
+    rotation.x = x;
+    rotation.y = y;
+    rotation.z = z;
+}
+
+void RigidBody::setOrientation(const real r, const real i, const real j, const real k) {
+    orientation.r = r;
+    orientation.i = i;
+    orientation.j = j;
+    orientation.k = k;
+    orientation.normalise();
+}
+
 real RigidBody::getMass() const {
     if (inverseMass == 0) {
         return REAL_MAX;
@@ -142,28 +172,87 @@ real RigidBody::getMass() const {
 }
 
 void RigidBody::integrate(real duration) {
+    if (!isAwake) return;
+
     // Calculate linear acceleration from force inputs.
     lastFrameAcceleration = acceleration;
     lastFrameAcceleration.addScaledVector(forceAccum, inverseMass);
+
     // Calculate angular acceleration from torque inputs.
-    Vector3 angularAcceleration = inverseInertiaTensorWorld.transform(torqueAccum);
-    // Adjust velocities.
+    Vector3 angularAcceleration =
+        inverseInertiaTensorWorld.transform(torqueAccum);
+
+    // Adjust velocities
     // Update linear velocity from both acceleration and impulse.
     velocity.addScaledVector(lastFrameAcceleration, duration);
+
     // Update angular velocity from both acceleration and impulse.
     rotation.addScaledVector(angularAcceleration, duration);
+
     // Impose drag.
     velocity *= real_pow(linearDamping, duration);
     rotation *= real_pow(angularDamping, duration);
-    // Adjust positions.
+
+    // Adjust positions
     // Update linear position.
     position.addScaledVector(velocity, duration);
+
     // Update angular position.
     orientation.addScaledVector(rotation, duration);
-    // Normalize the orientation, and update the matrices with the new position and orientation.
+
+    // Normalise the orientation, and update the matrices with the new
+    // position and orientation
     calculateDerivedData();
+
     // Clear accumulators.
     clearAccumulators();
+
+    // Update the kinetic energy store, and possibly put the body to
+    // sleep.
+    if (canSleep) {
+        real currentMotion = velocity.scalarProduct(velocity) +
+            rotation.scalarProduct(rotation);
+
+        real bias = real_pow(0.5, duration);
+        motion = bias * motion + (1 - bias) * currentMotion;
+
+        if (motion < sleepEpsilon) setAwake(false);
+        else if (motion > 10 * sleepEpsilon) motion = 10 * sleepEpsilon;
+    }
+}
+
+void RigidBody::setDamping(const real linearDamping, const real angularDamping) {
+    RigidBody::linearDamping = linearDamping;
+    RigidBody::angularDamping = angularDamping;
+}
+
+void RigidBody::setLinearDamping(const real linearDamping) {
+    RigidBody::linearDamping = linearDamping;
+}
+
+void RigidBody::setAngularDamping(const real angularDamping) {
+    RigidBody::angularDamping = angularDamping;
+}
+
+void RigidBody::setAcceleration(const Vector3& acceleration) {
+    RigidBody::acceleration = acceleration;
+}
+
+void RigidBody::setAwake(const bool awake) {
+    if (awake) {
+        isAwake = true;
+        motion = sleepEpsilon * 2.0f;
+    } else {
+        isAwake = false;
+        velocity.clear();
+        rotation.clear();
+    }
+}
+
+void RigidBody::setCanSleep(const bool canSleep) {
+    RigidBody::canSleep = canSleep;
+
+    if (!canSleep && !isAwake) setAwake();
 }
 
 Vector3 RigidBody::getTorqueAccum() {
@@ -180,6 +269,11 @@ Vector3 RigidBody::getVelocity() const {
 
 Matrix4 RigidBody::getTransform() const {
     return transformMatrix;
+}
+
+Vector3 dynahex::RigidBody::getPosition() const
+{
+    return position;
 }
 
 

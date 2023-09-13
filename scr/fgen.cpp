@@ -14,7 +14,7 @@ void Gravity::updateForce(RigidBody *body, real duration) {
 }
 
 Spring::Spring(const Vector3 &localConnectionPt, RigidBody *other, const Vector3 &otherConnectionPt,
-               real springConstant, real restLength) : connectionPoint(localConnectionPt),
+          real springConstant, real restLength) : connectionPoint(localConnectionPt),
           otherConnectionPoint(otherConnectionPt), other(other), springConstant(springConstant),
           restLength(restLength) {}
 
@@ -120,7 +120,7 @@ void Buoyancy::updateForce(RigidBody *body, real duration) {
 
     // Check if we're out of the water
     if (depth >= waterHeight + maxDepth) return;
-    Vector3 force = Vector3::Zero;
+    Vector3 force = Vector3::ZERO;
 
     // Check if we're at maximum depth
     if (depth <= waterHeight - maxDepth) {
@@ -152,7 +152,7 @@ void ForceRegistry::updateForces(real duration) {
     }
 }
 
-void ForceRegistry::add(RigidBody *body, ForceGenerator *fg) {
+void ForceRegistry::add(RigidBody* body, ForceGenerator* fg) {
     ForceRegistry::ForceRegistration registration{};
     registration.body = body;
     registration.fg = fg;
@@ -163,10 +163,9 @@ void ForceRegistry::clear() {
     registrations.clear();
 }
 
-void ForceRegistry::remove(RigidBody *body, ForceGenerator *fg) {
+void ForceRegistry::remove(RigidBody* body, ForceGenerator* fg) {
     registrations.erase(std::remove_if(registrations.begin(), registrations.end(),
-                                       [body, fg](const ForceRegistration& registration) {
-                                           return registration.body == body && registration.fg == fg;
-                                       }), registrations.end());
+        [body, fg](const ForceRegistration& registration) {
+            return registration.body == body && registration.fg == fg;
+        }), registrations.end());
 }
-

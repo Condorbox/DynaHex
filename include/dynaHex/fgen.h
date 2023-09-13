@@ -2,8 +2,8 @@
 #ifndef DYNAHEX_FGEN_H
 #define DYNAHEX_FGEN_H
 
-#include <vector>
 #include "body.h"
+#include <vector>
 
 namespace dynahex {
     class ForceGenerator {
@@ -14,6 +14,7 @@ namespace dynahex {
         */
         virtual void updateForce(RigidBody *body, real duration) = 0;
     };
+
     /**
     * A force generator that applies a gravitational force. One instance
     * can be used for multiple rigid bodies.
@@ -266,6 +267,4 @@ namespace dynahex {
         void updateForces(real duration);
     };
 }
-
-
 #endif //DYNAHEX_FGEN_H

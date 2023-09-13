@@ -1,7 +1,7 @@
 #ifndef DYNAHEX_PFGEN_H
 #define DYNAHEX_PFGEN_H
 
-#include <dynaHex/particle.h>
+#include "dynaHex/particle.h"
 #include <vector>
 
 namespace dynahex {

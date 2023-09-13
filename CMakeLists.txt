@@ -25,4 +25,6 @@ add_executable(DynaHex main.cpp
         scr/fgen.cpp
         include/dynaHex/fgen.h
         include/dynaHex/world.h
-        scr/world.cpp)
+        scr/world.cpp
+        include/dynaHex/collide_broad.h
+        scr/collide_broad.cpp)

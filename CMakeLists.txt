@@ -27,4 +27,7 @@ add_executable(DynaHex main.cpp
         include/dynaHex/world.h
         scr/world.cpp
         include/dynaHex/collide_broad.h
-        scr/collide_broad.cpp)
+        scr/collide_broad.cpp
+        include/dynaHex/contacts.h
+        include/dynaHex/collide_narrow.h
+        scr/collide_narrow.cpp)

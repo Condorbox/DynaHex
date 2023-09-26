@@ -658,6 +658,10 @@ namespace dynahex {
                     vector.z * data[10]
             };
         }
+
+        [[nodiscard]] Vector3 getAxisVector(int i) const {
+            return Vector3{data[i], data[i+4], data[i+8]};
+        }
     };
 }
 

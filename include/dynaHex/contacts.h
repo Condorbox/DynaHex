@@ -33,6 +33,11 @@ namespace dynahex {
          * between the inter-penetrating points.
          */
         real penetration;
+        /**
+         * Sets the data that doesn't normally depend on the position
+         * of the contact (i.e. the bodies, and their material properties).
+         */
+        void setBodyData(RigidBody* one, RigidBody *two, real friction, real restitution);
     };
 }
 

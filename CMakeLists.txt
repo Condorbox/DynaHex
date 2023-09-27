@@ -30,4 +30,5 @@ add_executable(DynaHex main.cpp
         scr/collide_broad.cpp
         include/dynaHex/contacts.h
         include/dynaHex/collide_narrow.h
-        scr/collide_narrow.cpp)
+        scr/collide_narrow.cpp
+        scr/contacts.cpp)

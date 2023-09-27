@@ -7,12 +7,10 @@ namespace dynahex {
     // Forward declarations of primitive friends
     class IntersectionTests;
     class CollisionDetector;
-
     /**
      * Represents a primitive to detect collisions against.
      */
-    class CollisionPrimitive
-    {
+    class CollisionPrimitive {
     public:
         /**
          * This class exists to help the collision detector
@@ -61,22 +59,19 @@ namespace dynahex {
      * Represents a rigid body that can be treated as a sphere
      * for collision detection.
      */
-    class CollisionSphere : public CollisionPrimitive
-    {
+    class CollisionSphere : public CollisionPrimitive {
     public:
         /**
          * The radius of the sphere.
          */
         real radius;
     };
-
     /**
      * The plane is not a primitive: it doesn't represent another
      * rigid body. It is used for contacts with the immovable
      * world geometry.
      */
-    class CollisionPlane : public CollisionPrimitive
-    {
+    class CollisionPlane : public CollisionPrimitive {
     public:
         /**
          * The plane normal
@@ -89,11 +84,47 @@ namespace dynahex {
         real offset;
     };
     /**
+     * Represents a rigid body that can be treated as an aligned bounding
+     * box for collision detection.
+     */
+    class CollisionBox : public CollisionPrimitive {
+    public:
+        /**
+         * Holds the half-sizes of the box along each of its local axes.
+         */
+        Vector3 halfSize;
+    };
+    /**
+     * A wrapper class that holds fast intersection tests. These
+     * can be used to drive the coarse collision detection system or
+     * as an early out in the full collision tests below.
+     */
+    class IntersectionTests {
+    public:
+        static bool sphereAndHalfSpace(const CollisionSphere &sphere, const CollisionPlane &plane);
+
+        static bool sphereAndSphere(const CollisionSphere &one, const CollisionSphere &two);
+
+        static bool boxAndBox(const CollisionBox &one, const CollisionBox &two);
+        /**
+         * Does an intersection test on an arbitrarily aligned box and a
+         * half-space.
+         *
+         * The box is given as a transform matrix, including
+         * position, and a vector of half-sizes for the extend of the
+         * box along each local axis.
+         *
+         * The half-space is given as a direction (i.e. unit) vector and the
+         * offset of the limiting plane from the origin, along the given
+         * direction.
+         */
+        static bool boxAndHalfSpace(const CollisionBox &box, const CollisionPlane &plane);
+    };
+    /**
      * A helper structure that contains information for the detector to use
      * in building its contact data.
      */
-    struct CollisionData
-    {
+    struct CollisionData {
         /**
          * Holds the base of the collision data: the first contact
          * in the array. This is used so that the contact pointer (below)
@@ -136,8 +167,7 @@ namespace dynahex {
          * Notifies the data that the given number of contacts have
          * been added.
          */
-        void addContacts(unsigned count)
-        {
+        void addContacts(unsigned count) {
             // Reduce the number of contacts remaining, add number used
             contactsLeft -= count;
             contactCount += count;
@@ -145,6 +175,62 @@ namespace dynahex {
             // Move the array forward
             contacts += count;
         }
+    };
+    /**
+     * A wrapper class that holds the fine grained collision detection
+     * routines.
+     *
+     * Each of the functions has the same format: it takes the details
+     * of two objects, and a pointer to a contact array to fill. It
+     * returns the number of contacts it wrote into the array.
+     */
+    class CollisionDetector {
+    public:
+        static unsigned sphereAndHalfSpace(
+                const CollisionSphere &sphere,
+                const CollisionPlane &plane,
+                CollisionData *data
+        );
+
+        static unsigned sphereAndTruePlane(
+                const CollisionSphere &sphere,
+                const CollisionPlane &plane,
+                CollisionData *data
+        );
+
+        static unsigned sphereAndSphere(
+                const CollisionSphere &one,
+                const CollisionSphere &two,
+                CollisionData *data
+        );
+             /**
+             * Does a collision test on a collision box and a plane representing
+             * a half-space (i.e. the normal of the plane
+             * points out of the half-space).
+            */
+        static unsigned boxAndHalfSpace(
+                const CollisionBox &box,
+                const CollisionPlane &plane,
+                CollisionData *data
+        );
+
+        static unsigned boxAndBox(
+                const CollisionBox &one,
+                const CollisionBox &two,
+                CollisionData *data
+        );
+
+        static unsigned boxAndPoint(
+                const CollisionBox &box,
+                const Vector3 &point,
+                CollisionData *data
+        );
+
+        static unsigned boxAndSphere(
+                const CollisionBox &box,
+                const CollisionSphere &sphere,
+                CollisionData *data
+        );
     };
 }
 

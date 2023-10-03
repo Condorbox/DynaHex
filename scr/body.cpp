@@ -271,9 +271,12 @@ Matrix4 RigidBody::getTransform() const {
     return transformMatrix;
 }
 
-Vector3 dynahex::RigidBody::getPosition() const
-{
+Vector3 RigidBody::getPosition() const {
     return position;
+}
+
+bool RigidBody::getAwake() const {
+    return isAwake;
 }
 
 

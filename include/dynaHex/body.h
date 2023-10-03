@@ -219,6 +219,14 @@ namespace dynahex {
         [[nodiscard]] Vector3 getVelocity() const;
         [[nodiscard]] Matrix4 getTransform() const;
         [[nodiscard]] Vector3 getPosition() const;
+        /**
+         * Returns true if the body is awake and responding to
+         * integration.
+         *
+         * @return The awake state of the body.
+         */
+        [[nodiscard]] bool getAwake() const;
+
     };
 }
 #endif //DYNAHEX_BODY_H

@@ -226,7 +226,22 @@ namespace dynahex {
          * @return The awake state of the body.
          */
         [[nodiscard]] bool getAwake() const;
+        [[nodiscard]] Vector3 getRotation() const;
+        [[nodiscard]] Vector3 getLastFrameAcceleration() const;
 
+        void getInverseInertiaTensorWorld(Matrix3 *pMatrix3) const;
+
+        [[nodiscard]] real getInverseMass() const;
+
+        void addVelocity(const Vector3 &deltaVelocity);
+
+        void addRotation(const Vector3 &deltaRotation);
+
+        void getPosition(Vector3 *position) const;
+
+        void getOrientation(Quaternion *orientation) const;
+
+        void setOrientation(Quaternion &orientation);
     };
 }
 #endif //DYNAHEX_BODY_H

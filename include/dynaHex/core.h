@@ -405,6 +405,18 @@ namespace dynahex {
             data[8] = t3;
         }
 
+        void operator*=(const real scalar) {
+            data[0] *= scalar; data[1] *= scalar; data[2] *= scalar;
+            data[3] *= scalar; data[4] *= scalar; data[5] *= scalar;
+            data[6] *= scalar; data[7] *= scalar; data[8] *= scalar;
+        }
+
+        void operator+=(const Matrix3 &o) {
+            data[0] += o.data[0]; data[1] += o.data[1]; data[2] += o.data[2];
+            data[3] += o.data[3]; data[4] += o.data[4]; data[5] += o.data[5];
+            data[6] += o.data[6]; data[7] += o.data[7]; data[8] += o.data[8];
+        }
+
         // Transform the given vector by this matrix.
         [[nodiscard]] Vector3 transform(const Vector3 &vector) const {
             return (*this) * vector;
@@ -514,6 +526,16 @@ namespace dynahex {
          * Interpolates a couple of matrices.
          */
         static Matrix3 linearInterpolate(const Matrix3& a, const Matrix3& b, real prop);
+
+        Vector3 transformTranspose(Vector3 vector);
+
+        /**
+         * Sets the matrix to be a skew symmetric matrix based on
+         * the given vector. The skew symmetric matrix is the equivalent
+         * of the vector product. So if a,b are vectors. a x b = A_s b
+         * where A_s is the skew symmetric form of a.
+         */
+        void setSkewSymmetric(Vector3 vector);
     };
 
     class Matrix4 {

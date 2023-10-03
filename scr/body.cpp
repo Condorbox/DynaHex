@@ -279,4 +279,41 @@ bool RigidBody::getAwake() const {
     return isAwake;
 }
 
+Vector3 RigidBody::getRotation() const {
+    return rotation;
+}
+
+Vector3 RigidBody::getLastFrameAcceleration() const {
+    return lastFrameAcceleration;
+}
+
+void RigidBody::getInverseInertiaTensorWorld(Matrix3 *inverseInertiaTensor) const {
+    *inverseInertiaTensor = inverseInertiaTensorWorld;
+}
+
+real RigidBody::getInverseMass() const{
+    return inverseMass;
+}
+
+void RigidBody::addVelocity(const Vector3 &deltaVelocity) {
+    velocity += deltaVelocity;
+}
+
+void RigidBody::addRotation(const Vector3 &deltaRotation) {
+    rotation += deltaRotation;
+}
+
+void RigidBody::getPosition(Vector3 *position) const {
+    *position = RigidBody::position;
+}
+
+void RigidBody::getOrientation(Quaternion *orientation) const {
+    *orientation = RigidBody::orientation;
+}
+
+void RigidBody::setOrientation(Quaternion &orientation) {
+    RigidBody::orientation = orientation;
+    RigidBody::orientation.normalise();
+}
+
 

@@ -83,3 +83,22 @@ Matrix3 Matrix3::linearInterpolate(const dynahex::Matrix3 &a, const dynahex::Mat
     }
     return result;
 }
+
+Vector3 Matrix3::transformTranspose(Vector3 vector) {
+    return Vector3 {
+        vector.x * data[0] + vector.y * data[3] + vector.z * data[6],
+        vector.x * data[1] + vector.y * data[4] + vector.z * data[7],
+        vector.x * data[2] + vector.y * data[5] + vector.z * data[8]
+    };
+}
+
+void Matrix3::setSkewSymmetric(Vector3 vector) {
+    data[0] = data[4] = data[8] = 0;
+    data[1] = -vector.z;
+    data[2] = vector.y;
+    data[3] = vector.z;
+    data[5] = -vector.x;
+    data[6] = -vector.y;
+    data[7] = vector.x;
+}
+

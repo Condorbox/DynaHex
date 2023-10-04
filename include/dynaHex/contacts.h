@@ -132,11 +132,6 @@ namespace dynahex {
          */
         void calculateContactBasis();
         /**
-         * Applies an impulse to the given body, returning the
-         * change in velocities.
-         */
-        void applyImpulse(const Vector3 &impulse, RigidBody *body, Vector3 *velocityChange, Vector3 *rotationChange);
-        /**
          * Performs an inertia-weighted impulse based resolution of this
          * contact alone.
          */

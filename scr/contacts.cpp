@@ -475,7 +475,6 @@ void ContactResolver::prepareContacts(Contact* contacts, unsigned numContacts, r
     }
 }
 
-
 void ContactResolver::adjustVelocities(Contact *c, unsigned numContacts, real duration) {
     Vector3 velocityChange[2], rotationChange[2];
     Vector3 deltaVel;

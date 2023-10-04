@@ -31,6 +31,11 @@ namespace dynahex {
      * class.
      */
     class Contact {
+        /**
+        * The contact resolver object needs access into the contacts to
+        * set and effect the contact.
+        */
+        friend class ContactResolver;
     public:
         /**
          * Holds the bodies that are involved in the contact. The
@@ -263,7 +268,7 @@ namespace dynahex {
         /**
          * Returns true if the resolver has valid settings and is ready to go.
          */
-        bool isValid() {
+        [[nodiscard]] bool isValid() const {
             return (velocityIterations > 0) &&
                    (positionIterations > 0) &&
                    (positionEpsilon >= 0.0f) &&
@@ -307,7 +312,7 @@ namespace dynahex {
          * @param duration The duration of the previous integration step.
          * This is used to compensate for forces applied.
          */
-        void resolveContacts(Contact *contactArray);
+        void resolveContacts(Contact *contactArray, unsigned numContacts, real duration);
     protected:
         /**
          * Sets up contacts ready for processing. This makes sure their

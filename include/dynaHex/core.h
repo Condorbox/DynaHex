@@ -187,6 +187,25 @@ namespace dynahex {
         }
     };
 
+    class Vector2D {
+    public:
+        real x;
+        real y;
+    private:
+        real _pad[2]{};
+    public:
+        Vector2D() : x(0), y(0) {}
+        Vector2D(const real x, const real y) : x(x), y(y) {}
+
+        [[nodiscard]] real scalarProduct(const Vector2D &vector) const {
+            return x*vector.x + y*vector.y;
+        }
+
+        [[nodiscard]] Vector2D perpendicular() const {
+            return {-y, x};
+        }
+    };
+
     class Quaternion {
     public:
         union {
